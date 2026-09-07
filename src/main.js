@@ -81,7 +81,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.outputColorSpace = THREE.SRGBColorSpace
 renderer.toneMapping = THREE.ACESFilmicToneMapping
-renderer.toneMappingExposure = 1.14
+renderer.toneMappingExposure = 1.08
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
@@ -99,13 +99,13 @@ const lookEnd = new THREE.Vector3(0, 0.12, 0)
 function setCameraRigs() {
   const mobile = window.innerWidth < 860
   if (mobile) {
-    camStart.set(1.35, 2.35, 3.55)
-    camMid.set(0.2, 2.9, 3.7)
-    camEnd.set(-1.55, 3.2, 3.05)
+    camStart.set(1.55, 2.15, 3.45)
+    camMid.set(0.15, 2.7, 3.55)
+    camEnd.set(-1.45, 3.05, 2.95)
   } else {
-    camStart.set(2.05, 1.85, 3.25)
-    camMid.set(0.35, 2.55, 3.45)
-    camEnd.set(-2.15, 2.95, 2.55)
+    camStart.set(2.55, 1.22, 3.15)
+    camMid.set(0.55, 2.15, 3.45)
+    camEnd.set(-2.35, 2.55, 2.55)
   }
 }
 setCameraRigs()
@@ -113,11 +113,11 @@ camera.position.copy(camStart)
 
 const pmrem = new THREE.PMREMGenerator(renderer)
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.02).texture
-scene.environmentIntensity = 0.78
+scene.environmentIntensity = 1.05
 
-scene.add(new THREE.HemisphereLight(colors.foreground, colors.background, 0.55))
+scene.add(new THREE.HemisphereLight(colors.foreground, colors.background, 0.72))
 
-const keyLight = new THREE.DirectionalLight(colors.foreground, 1.48)
+const keyLight = new THREE.DirectionalLight(colors.foreground, 1.85)
 keyLight.position.set(3.2, 5.2, 2.4)
 keyLight.castShadow = true
 keyLight.shadow.mapSize.set(2048, 2048)
@@ -130,15 +130,19 @@ keyLight.shadow.camera.bottom = -4
 keyLight.shadow.bias = -0.00025
 scene.add(keyLight)
 
-const rim = new THREE.DirectionalLight(colors.primary, 1.7)
+const rim = new THREE.DirectionalLight(colors.foreground, 1.15)
 rim.position.set(-3.4, 1.8, -2.6)
 scene.add(rim)
 
-const fill = new THREE.DirectionalLight(colors.foreground, 0.28)
+const goldRim = new THREE.DirectionalLight(colors.primary, 0.55)
+goldRim.position.set(1.6, 0.8, -2.2)
+scene.add(goldRim)
+
+const fill = new THREE.DirectionalLight(colors.foreground, 0.32)
 fill.position.set(-2.2, 2.4, 3.2)
 scene.add(fill)
 
-const underglow = new THREE.PointLight(colors.primary, 1.7, 4.5, 1.6)
+const underglow = new THREE.PointLight(colors.primary, 1.15, 4.5, 1.6)
 underglow.position.set(0, -0.15, 0)
 scene.add(underglow)
 
@@ -246,11 +250,11 @@ function frameFromProgress(p) {
   camera.position.y += pointer.y * 0.08
   look.copy(lookStart).lerp(lookEnd, p)
   camera.lookAt(look)
-  underglow.intensity = 1.15 + p * 1.6
+  underglow.intensity = 0.85 + p * 1.1
   shadow.material.opacity = 0.55 - p * 0.22
   if (subject) {
     applyExplosion(subject, p)
-    subject.rotation.y = THREE.MathUtils.degToRad(-8) + p * 0.35
+    subject.rotation.y = THREE.MathUtils.degToRad(-32) + p * 0.4
   }
   updateUI(p)
 }

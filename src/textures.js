@@ -278,6 +278,100 @@ export function leatherBump() {
   return canvas
 }
 
+export function brushedSteelTexture(colors) {
+  const paper = colors.foreground
+  const ink = colors.background
+  const { canvas, ctx } = makeCanvas(1024, 256)
+  ctx.fillStyle = '#9aa0a8'
+  ctx.fillRect(0, 0, 1024, 256)
+  for (let i = 0; i < 220; i += 1) {
+    const y = (i * 17) % 256
+    ctx.strokeStyle = i % 3 === 0 ? hexAlpha(paper, 0.12) : hexAlpha(ink, 0.16)
+    ctx.lineWidth = i % 5 === 0 ? 1.6 : 0.7
+    ctx.beginPath()
+    ctx.moveTo(0, y + (i % 7) * 0.4)
+    ctx.lineTo(1024, y + ((i * 3) % 5) * 0.3)
+    ctx.stroke()
+  }
+  return canvas
+}
+
+export function rubberTexture(colors) {
+  const ink = colors.background
+  const { canvas, ctx } = makeCanvas(512, 1024)
+  ctx.fillStyle = '#111111'
+  ctx.fillRect(0, 0, 512, 1024)
+  for (let x = 0; x < 512; x += 14) {
+    ctx.fillStyle = hexAlpha(ink, 0.55)
+    ctx.fillRect(x, 0, 6, 1024)
+    ctx.fillStyle = hexAlpha('#2a2a2a', 0.35)
+    ctx.fillRect(x + 6, 0, 2, 1024)
+  }
+  return canvas
+}
+
+export function rubberBump() {
+  const { canvas, ctx } = makeCanvas(256, 512)
+  ctx.fillStyle = '#808080'
+  ctx.fillRect(0, 0, 256, 512)
+  for (let x = 0; x < 256; x += 12) {
+    ctx.fillStyle = '#5a5a5a'
+    ctx.fillRect(x, 0, 5, 512)
+    ctx.fillStyle = '#a8a8a8'
+    ctx.fillRect(x + 5, 0, 2, 512)
+  }
+  return canvas
+}
+
+export function noxCasebackTexture(colors) {
+  const ink = colors.background
+  const gold = colors.primary
+  const paper = colors.foreground
+  const size = 1024
+  const { canvas, ctx } = makeCanvas(size, size)
+  const cx = size / 2
+  const cy = size / 2
+
+  ctx.fillStyle = '#3a3d42'
+  ctx.fillRect(0, 0, size, size)
+
+  for (let i = 0; i < 90; i += 1) {
+    ctx.strokeStyle = i % 2 === 0 ? hexAlpha(paper, 0.05) : hexAlpha(ink, 0.2)
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.arc(cx, cy, 8 + i * 5.2, 0, Math.PI * 2)
+    ctx.stroke()
+  }
+
+  ctx.strokeStyle = paper
+  ctx.lineWidth = 8
+  ctx.beginPath()
+  ctx.arc(cx, cy, size * 0.46, 0, Math.PI * 2)
+  ctx.stroke()
+
+  ctx.strokeStyle = hexAlpha(gold, 0.45)
+  ctx.lineWidth = 2.4
+  ctx.beginPath()
+  ctx.arc(cx, cy, size * 0.28, 0, Math.PI * 2)
+  ctx.stroke()
+
+  ctx.fillStyle = paper
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.font = '500 44px "Outfit", system-ui, sans-serif'
+  ctx.fillText('NOX', cx, cy - 74)
+  ctx.font = '400 17px "IBM Plex Mono", monospace'
+  ctx.fillStyle = gold
+  ctx.fillText('OPEN  CALIBRE', cx, cy - 32)
+  ctx.fillStyle = paper
+  ctx.fillText('CAL. 441  ·  25 JEWELS', cx, cy + 8)
+  ctx.fillStyle = hexAlpha(paper, 0.7)
+  ctx.fillText('NX–441–0007', cx, cy + 48)
+  ctx.fillText('WATER RESISTANT 100M', cx, cy + 80)
+
+  return canvas
+}
+
 export function shadowTexture() {
   const { canvas, ctx } = makeCanvas(512, 512)
   const g = ctx.createRadialGradient(256, 256, 40, 256, 256, 250)

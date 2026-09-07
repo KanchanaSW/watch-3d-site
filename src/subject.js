@@ -1,75 +1,58 @@
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
 import {
-  casebackTexture,
-  dateTexture,
-  dialTexture,
-  genevaTexture,
-  leatherBump,
-  leatherTexture,
+  noxCasebackTexture,
   perlageTexture,
+  rubberBump,
+  rubberTexture,
 } from './textures.js'
 import * as mat from './materials.js'
 
-export const LAYERS = ['crystal', 'hands', 'dial', 'movement', 'case', 'caseback']
+export const LAYERS = ['screws', 'crystal', 'hands', 'dial', 'movement', 'case', 'caseback']
 
 export const LAYER_WINDOWS = {
-  crystal: [0.1, 0.32],
-  hands: [0.28, 0.5],
+  screws: [0.08, 0.26],
+  crystal: [0.16, 0.38],
+  hands: [0.32, 0.52],
   dial: [0.46, 0.64],
-  movement: [0.58, 0.76],
+  movement: [0.56, 0.76],
   case: [0.7, 0.88],
   caseback: [0.78, 0.96],
 }
 
-const CASE_R = 1.05
-const DIAL_R = 0.86
-const MOVEMENT_R = 0.78
-const RUBY = '#6B1D2A'
+const CASE_R = 1.12
+const DIAL_R = 0.74
+const MOVEMENT_R = 0.68
+const RUBY = '#C45C6A'
 
 const GEARS = [
-  { teeth: 48, inner: 0.17, outer: 0.255, hole: 0.04, h: 0.022, x: -0.24, z: 0.2, y: 0.012, gold: true },
-  { teeth: 18, inner: 0.062, outer: 0.122, hole: 0.016, h: 0.01, x: 0, z: 0, y: 0.024, gold: false },
-  { teeth: 20, inner: 0.052, outer: 0.108, hole: 0.014, h: 0.01, x: 0.22, z: -0.1, y: 0.02, gold: false },
-  { teeth: 16, inner: 0.042, outer: 0.082, hole: 0.012, h: 0.01, x: 0.14, z: -0.28, y: 0.02, gold: false },
-  { teeth: 17, inner: 0.04, outer: 0.088, hole: 0.012, h: 0.01, x: 0.36, z: 0.14, y: 0.018, gold: false },
-  { teeth: 22, inner: 0.078, outer: 0.148, hole: 0.02, h: 0.008, x: -0.24, z: 0.2, y: 0.032, gold: true },
+  { teeth: 48, inner: 0.2, outer: 0.3, hole: 0.045, h: 0.024, x: -0.26, z: 0.18, y: 0.01, gold: true },
+  { teeth: 20, inner: 0.07, outer: 0.14, hole: 0.018, h: 0.012, x: 0.02, z: 0.02, y: 0.026, gold: true },
+  { teeth: 22, inner: 0.06, outer: 0.125, hole: 0.016, h: 0.011, x: 0.24, z: -0.14, y: 0.02, gold: false },
+  { teeth: 16, inner: 0.045, outer: 0.092, hole: 0.014, h: 0.01, x: 0.16, z: -0.32, y: 0.02, gold: true },
+  { teeth: 18, inner: 0.048, outer: 0.1, hole: 0.014, h: 0.01, x: 0.38, z: 0.12, y: 0.018, gold: false },
+  { teeth: 24, inner: 0.085, outer: 0.16, hole: 0.022, h: 0.01, x: -0.26, z: 0.18, y: 0.034, gold: true },
+  { teeth: 14, inner: 0.038, outer: 0.078, hole: 0.012, h: 0.01, x: -0.08, z: -0.36, y: 0.016, gold: false },
 ]
 
 const JEWELS = [
-  [0, 0, 0.032],
-  [-0.24, 0.2, 0.034],
-  [0.22, -0.1, 0.028],
-  [0.14, -0.28, 0.028],
-  [0.36, 0.14, 0.026],
-  [0.22, -0.42, 0.03],
-  [-0.38, 0.08, 0.026],
-  [-0.12, -0.36, 0.026],
-  [0.08, 0.36, 0.026],
-  [0.42, -0.18, 0.026],
-  [-0.42, -0.16, 0.024],
-  [0.3, 0.36, 0.028],
-  [-0.32, -0.28, 0.024],
-  [0.02, -0.48, 0.028],
-  [-0.18, 0.42, 0.026],
-]
-
-const MOVEMENT_SCREWS = [
-  [-0.52, -0.18],
-  [-0.48, 0.28],
-  [-0.18, 0.52],
-  [0.22, 0.5],
-  [0.52, 0.18],
-  [0.48, -0.22],
-  [0.18, -0.54],
-  [-0.28, -0.48],
+  [0.02, 0.02, 0.034],
+  [-0.26, 0.18, 0.036],
+  [0.24, -0.14, 0.03],
+  [0.16, -0.32, 0.028],
+  [0.38, 0.12, 0.026],
+  [-0.42, 0.06, 0.028],
+  [0.08, 0.4, 0.026],
+  [-0.14, -0.4, 0.024],
+  [0.42, -0.2, 0.024],
+  [-0.36, -0.22, 0.024],
 ]
 
 const LUGS = [
-  { x: -0.38, z: -1.05, yaw: 0.16 },
-  { x: 0.38, z: -1.05, yaw: -0.16 },
-  { x: -0.38, z: 1.05, yaw: -0.16 },
-  { x: 0.38, z: 1.05, yaw: 0.16 },
+  { x: -0.42, z: -1.12, yaw: 0.12 },
+  { x: 0.42, z: -1.12, yaw: -0.12 },
+  { x: -0.42, z: 1.12, yaw: -0.12 },
+  { x: 0.42, z: 1.12, yaw: 0.12 },
 ]
 
 function ringShape(outer, inner) {
@@ -96,35 +79,58 @@ function extrudeRing(outer, inner, depth, bevel = 0.01) {
   return geo
 }
 
-function crystalGeometry(radius) {
-  const pts = []
-  for (let i = 0; i <= 18; i += 1) {
-    const t = i / 18
-    pts.push(new THREE.Vector2(t * radius, 0.008 + 0.042 * (1 - t * t)))
-  }
-  pts.push(new THREE.Vector2(radius, 0.003))
+function flatCrystalGeometry(radius) {
+  const pts = [
+    new THREE.Vector2(0, 0.012),
+    new THREE.Vector2(radius * 0.92, 0.012),
+    new THREE.Vector2(radius, 0.006),
+    new THREE.Vector2(radius, 0.001),
+  ]
   return new THREE.LatheGeometry(pts, 64)
 }
 
-function dauphineShape(length, halfW) {
+function swordShape(length, halfW) {
   const shape = new THREE.Shape()
-  shape.moveTo(0, -length * 0.18)
-  shape.lineTo(halfW * 0.35, -length * 0.05)
-  shape.lineTo(halfW, length * 0.36)
+  shape.moveTo(0, -length * 0.16)
+  shape.lineTo(halfW * 0.35, -length * 0.04)
+  shape.lineTo(halfW, length * 0.3)
+  shape.lineTo(halfW * 0.42, length * 0.86)
   shape.lineTo(0, length)
-  shape.lineTo(-halfW, length * 0.36)
-  shape.lineTo(-halfW * 0.35, -length * 0.05)
+  shape.lineTo(-halfW * 0.42, length * 0.86)
+  shape.lineTo(-halfW, length * 0.3)
+  shape.lineTo(-halfW * 0.35, -length * 0.04)
+  shape.closePath()
+  const hole = new THREE.Path()
+  hole.moveTo(0, length * 0.06)
+  hole.lineTo(halfW * 0.26, length * 0.24)
+  hole.lineTo(halfW * 0.2, length * 0.74)
+  hole.lineTo(0, length * 0.84)
+  hole.lineTo(-halfW * 0.2, length * 0.74)
+  hole.lineTo(-halfW * 0.26, length * 0.24)
+  hole.closePath()
+  shape.holes.push(hole)
+  return shape
+}
+
+function lumeShape(length, halfW) {
+  const shape = new THREE.Shape()
+  shape.moveTo(0, length * 0.08)
+  shape.lineTo(halfW * 0.22, length * 0.26)
+  shape.lineTo(halfW * 0.16, length * 0.72)
+  shape.lineTo(0, length * 0.82)
+  shape.lineTo(-halfW * 0.16, length * 0.72)
+  shape.lineTo(-halfW * 0.22, length * 0.26)
   shape.closePath()
   return shape
 }
 
-function handGeometry(length, halfW, thickness) {
-  const geo = new THREE.ExtrudeGeometry(dauphineShape(length, halfW), {
+function extrudeFlat(shape, thickness) {
+  const geo = new THREE.ExtrudeGeometry(shape, {
     depth: thickness,
     bevelEnabled: true,
-    bevelThickness: 0.004,
-    bevelSize: 0.0035,
-    bevelSegments: 3,
+    bevelThickness: 0.003,
+    bevelSize: 0.0025,
+    bevelSegments: 2,
     curveSegments: 6,
   })
   geo.rotateX(-Math.PI / 2)
@@ -137,7 +143,7 @@ function batonGeometry(w, d, h) {
   const shape = new THREE.Shape()
   const x = -w / 2
   const y = -d / 2
-  const r = Math.min(w, d) * 0.3
+  const r = Math.min(w, d) * 0.22
   shape.moveTo(x + r, y)
   shape.lineTo(x + w - r, y)
   shape.quadraticCurveTo(x + w, y, x + w, y + r)
@@ -147,42 +153,62 @@ function batonGeometry(w, d, h) {
   shape.quadraticCurveTo(x, y + d, x, y + d - r)
   shape.lineTo(x, y + r)
   shape.quadraticCurveTo(x, y, x + r, y)
-  const geo = new THREE.ExtrudeGeometry(shape, {
-    depth: h,
-    bevelEnabled: true,
-    bevelThickness: 0.005,
-    bevelSize: 0.004,
-    bevelSegments: 3,
-    curveSegments: 6,
-  })
-  geo.rotateX(-Math.PI / 2)
-  geo.translate(0, h / 2, 0)
-  geo.computeVertexNormals()
-  return geo
+  return extrudeFlat(shape, h)
 }
 
 function lugGeometry() {
   const shape = new THREE.Shape()
-  shape.moveTo(-0.09, -0.16)
-  shape.lineTo(0.09, -0.16)
-  shape.lineTo(0.07, 0.18)
-  shape.lineTo(-0.07, 0.18)
+  shape.moveTo(-0.12, -0.2)
+  shape.lineTo(0.12, -0.2)
+  shape.lineTo(0.09, 0.22)
+  shape.lineTo(-0.09, 0.22)
   shape.closePath()
   const geo = new THREE.ExtrudeGeometry(shape, {
-    depth: 0.07,
+    depth: 0.09,
     bevelEnabled: true,
-    bevelThickness: 0.016,
-    bevelSize: 0.014,
+    bevelThickness: 0.02,
+    bevelSize: 0.016,
     bevelSegments: 3,
     curveSegments: 4,
   })
   geo.rotateX(-Math.PI / 2)
-  geo.translate(0, 0.035, 0)
+  geo.translate(0, 0.04, 0)
   geo.computeVertexNormals()
   return geo
 }
 
-function gearShape(teeth, inner, outer, hole) {
+function cushionGeometry() {
+  const w = 2.18
+  const d = 2.36
+  const r = 0.58
+  const hw = w / 2
+  const hd = d / 2
+  const shape = new THREE.Shape()
+  shape.moveTo(-hw + r, -hd)
+  shape.lineTo(hw - r, -hd)
+  shape.quadraticCurveTo(hw, -hd, hw, -hd + r)
+  shape.lineTo(hw, hd - r)
+  shape.quadraticCurveTo(hw, hd, hw - r, hd)
+  shape.lineTo(-hw + r, hd)
+  shape.quadraticCurveTo(-hw, hd, -hw, hd - r)
+  shape.lineTo(-hw, -hd + r)
+  shape.quadraticCurveTo(-hw, -hd, -hw + r, -hd)
+  const hole = new THREE.Path()
+  hole.absarc(0, 0, MOVEMENT_R + 0.04, 0, Math.PI * 2, true)
+  shape.holes.push(hole)
+  const geo = new THREE.ExtrudeGeometry(shape, {
+    depth: 0.13,
+    bevelEnabled: true,
+    bevelThickness: 0.018,
+    bevelSize: 0.014,
+    bevelSegments: 3,
+    curveSegments: 12,
+  })
+  geo.rotateX(-Math.PI / 2)
+  geo.translate(0, 0.065, 0)
+  geo.computeVertexNormals()
+  return geo
+}
   const shape = new THREE.Shape()
   const step = (Math.PI * 2) / teeth
   for (let i = 0; i < teeth; i += 1) {
@@ -297,8 +323,18 @@ function makeHairspring() {
   return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 128, 0.0024, 6, false)
 }
 
-function strapGeometry() {
-  return new RoundedBoxGeometry(0.52, 0.032, 0.58, 3, 0.04)
+function makeHScrew(steel, ink) {
+  const group = new THREE.Group()
+  group.add(new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.042, 0.018, 20), steel))
+  const slot = mat.coat(ink)
+  const left = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.008, 0.026), slot)
+  const right = left.clone()
+  left.position.set(-0.01, 0.008, 0)
+  right.position.set(0.01, 0.008, 0)
+  const bar = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.008, 0.008), slot)
+  bar.position.y = 0.008
+  group.add(left, right, bar)
+  return group
 }
 
 export function buildSubject({ colors }) {
@@ -306,158 +342,134 @@ export function buildSubject({ colors }) {
   const parts = []
   const anchors = {}
 
-  const paper = colors.foreground
   const gold = colors.primary
   const brass = colors.secondary
   const ink = colors.background
-  const steel = colors.muted
 
+  const steelMat = mat.polishedSteel('#E8EBEE')
+  const brushMat = mat.brushedSteel('#D0D5DB')
+  const mirrorMat = mat.mirrorSteel('#F2F4F6')
   const goldMat = mat.polishedGold(gold)
   const brassMat = mat.brushedGold(brass)
-  const steelMat = mat.polishedSteel(paper)
-  const darkMetal = mat.metal('#3a342c', { roughness: 0.28, metalness: 0.86, clearcoat: 0.2, envMapIntensity: 1.1 })
-  const leatherMat = mat.leather(steel, {
-    map: canvasMap(leatherTexture(colors), { wrap: true, repeat: 1 }),
-    bumpMap: canvasMap(leatherBump(), { wrap: true, repeat: 2, colorSpace: THREE.NoColorSpace }),
-  })
+  const blackMat = mat.matteBlack('#121212')
   const ruby = mat.gem(RUBY)
   const glass = mat.sapphire()
-  const genevaMap = canvasMap(genevaTexture(colors))
-  const bridgeMat = mat.brushedGold(gold, { map: genevaMap })
+  const lumeMat = mat.lume()
+  const rubberMat = mat.rubberStrap('#1C1C1C', {
+    map: canvasMap(rubberTexture(colors), { wrap: true, repeat: 1 }),
+    bumpMap: canvasMap(rubberBump(), { wrap: true, repeat: 2, colorSpace: THREE.NoColorSpace }),
+  })
+  const plateMat = mat.metal('#8A8E92', {
+    map: canvasMap(perlageTexture({ ...colors, secondary: '#8A8E92' })),
+    roughness: 0.42,
+    metalness: 0.8,
+    envMapIntensity: 1.05,
+  })
+
+  const screwR = CASE_R - 0.06
+  for (let i = 0; i < 6; i += 1) {
+    const a = (i / 6) * Math.PI * 2 - Math.PI / 2
+    const screw = makeHScrew(steelMat, ink)
+    screw.scale.setScalar(1.35)
+    screw.position.set(Math.sin(a) * screwR, 0.124, -Math.cos(a) * screwR)
+    screw.rotation.y = -a
+    addPart(root, parts, screw, 'screws', new THREE.Vector3(0, 1.35 + i * 0.02, 0))
+  }
 
   const bezel = new THREE.Group()
-  bezel.add(new THREE.Mesh(extrudeRing(CASE_R + 0.008, DIAL_R + 0.016, 0.032, 0.01), goldMat))
-  const knurlGeo = new THREE.BoxGeometry(0.024, 0.028, 0.013)
-  for (let i = 0; i < 72; i += 1) {
-    const a = (i / 72) * Math.PI * 2
-    const knurl = new THREE.Mesh(knurlGeo, goldMat)
-    knurl.position.set(Math.sin(a) * (CASE_R + 0.01), 0.004, -Math.cos(a) * (CASE_R + 0.01))
-    knurl.rotation.y = -a
-    bezel.add(knurl)
-  }
-  bezel.position.y = 0.09
-  addPart(root, parts, bezel, 'crystal', new THREE.Vector3(0, 1.08, 0))
+  bezel.add(new THREE.Mesh(extrudeRing(CASE_R + 0.02, DIAL_R + 0.028, 0.042, 0.01), brushMat))
+  const bevel = new THREE.Mesh(extrudeRing(CASE_R + 0.038, CASE_R + 0.004, 0.026, 0.008), mirrorMat)
+  bevel.position.y = -0.006
+  bezel.add(bevel)
+  bezel.position.y = 0.1
+  addPart(root, parts, bezel, 'crystal', new THREE.Vector3(0, 1.12, 0))
+  anchors.crystal = bezel
 
-  const crystal = new THREE.Mesh(crystalGeometry(DIAL_R + 0.01), glass)
-  crystal.position.y = 0.106
+  const crystal = new THREE.Mesh(flatCrystalGeometry(DIAL_R + 0.018), glass)
+  crystal.position.y = 0.128
   crystal.renderOrder = 4
-  addPart(root, parts, crystal, 'crystal', new THREE.Vector3(0, 1.24, 0))
-  anchors.crystal = crystal
+  addPart(root, parts, crystal, 'crystal', new THREE.Vector3(0, 1.28, 0))
 
   const hour = new THREE.Group()
-  hour.add(new THREE.Mesh(handGeometry(0.4, 0.042, 0.011), goldMat))
-  hour.add(new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.015, 20), goldMat))
-  hour.position.y = 0.07
+  hour.add(new THREE.Mesh(extrudeFlat(swordShape(0.42, 0.048), 0.01), steelMat))
+  hour.add(new THREE.Mesh(extrudeFlat(lumeShape(0.42, 0.048), 0.006), lumeMat))
+  hour.add(new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.014, 20), steelMat))
+  hour.position.y = 0.086
   hour.rotation.y = THREE.MathUtils.degToRad(-305)
+  hour.scale.setScalar(1.08)
   addPart(root, parts, hour, 'hands', new THREE.Vector3(-0.38, 0.92, -0.18))
 
   const minute = new THREE.Group()
-  minute.add(new THREE.Mesh(handGeometry(0.6, 0.032, 0.009), goldMat))
-  minute.add(new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.013, 18), goldMat))
-  minute.position.y = 0.082
+  minute.add(new THREE.Mesh(extrudeFlat(swordShape(0.62, 0.036), 0.009), steelMat))
+  minute.add(new THREE.Mesh(extrudeFlat(lumeShape(0.62, 0.036), 0.005), lumeMat))
+  minute.add(new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.012, 18), steelMat))
+  minute.position.y = 0.098
   minute.rotation.y = THREE.MathUtils.degToRad(-60)
+  minute.scale.setScalar(1.08)
   addPart(root, parts, minute, 'hands', new THREE.Vector3(0.42, 0.9, 0.16))
   anchors.hands = minute
 
   const second = new THREE.Group()
-  const secondsBlade = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.004, 0.74), steelMat)
-  secondsBlade.position.z = -0.22
-  const counter = new THREE.Mesh(new THREE.SphereGeometry(0.022, 12, 8), steelMat)
-  counter.position.z = 0.2
-  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.01, 10, 8), steelMat)
-  tip.position.z = -0.58
-  second.add(secondsBlade, counter, tip, new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.012, 14), steelMat))
-  second.position.y = 0.094
+  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.003, 0.78), steelMat)
+  blade.position.z = -0.22
+  const counter = new THREE.Mesh(new THREE.SphereGeometry(0.018, 12, 8), steelMat)
+  counter.position.z = 0.22
+  second.add(blade, counter, new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.01, 14), steelMat))
+  second.position.y = 0.1
   second.rotation.y = THREE.MathUtils.degToRad(-126)
   addPart(root, parts, second, 'hands', new THREE.Vector3(0.18, 1.08, 0.38))
 
-  const dial = new THREE.Mesh(new THREE.CylinderGeometry(DIAL_R, DIAL_R, 0.014, 72), mat.coat(ink))
-  dial.position.y = 0.05
-  const dialPrint = new THREE.Mesh(new THREE.CircleGeometry(DIAL_R * 0.985, 72), mat.sunburst(canvasMap(dialTexture(colors))))
-  dialPrint.rotation.x = -Math.PI / 2
-  dialPrint.position.y = 0.008
-  dial.add(dialPrint)
-  addPart(root, parts, dial, 'dial', new THREE.Vector3(0, 0.46, 0.08))
-  anchors.dial = dial
+  const chapter = new THREE.Mesh(extrudeRing(DIAL_R - 0.006, DIAL_R - 0.08, 0.014, 0.003), blackMat)
+  chapter.position.y = 0.058
+  addPart(root, parts, chapter, 'dial', new THREE.Vector3(0, 0.5, 0.04))
+  anchors.dial = chapter
 
-  const rehaut = new THREE.Mesh(extrudeRing(DIAL_R - 0.004, DIAL_R - 0.028, 0.012, 0.003), goldMat)
-  rehaut.position.y = 0.056
-  addPart(root, parts, rehaut, 'dial', new THREE.Vector3(0, 0.5, 0.04))
-
-  const hourGeo = batonGeometry(0.03, 0.1, 0.015)
-  const twelveGeo = batonGeometry(0.044, 0.12, 0.017)
+  const hourGeo = batonGeometry(0.028, 0.092, 0.014)
+  const twelveGeo = batonGeometry(0.04, 0.11, 0.016)
   for (let i = 0; i < 12; i += 1) {
-    const { x, z, a } = clockPos(i, 0.68)
-    const index = new THREE.Mesh(i === 0 ? twelveGeo : hourGeo, goldMat)
-    index.position.set(x, 0.062, z)
+    const { x, z, a } = clockPos(i, 0.69)
+    const index = new THREE.Mesh(i === 0 ? twelveGeo : hourGeo, steelMat)
+    index.position.set(x, 0.074, z)
     index.rotation.y = -a
     addPart(root, parts, index, 'dial', radialExplode(x, z, 0.34, 0.58))
   }
 
-  const tickGeo = new THREE.BoxGeometry(0.008, 0.008, 0.026)
-  for (let i = 0; i < 60; i += 1) {
-    if (i % 5 === 0) continue
-    const { x, z, a } = clockPos(i / 5, 0.78)
-    const tick = new THREE.Mesh(tickGeo, goldMat)
-    tick.position.set(x, 0.06, z)
-    tick.rotation.y = -a
-    addPart(root, parts, tick, 'dial', radialExplode(x, z, 0.28, 0.52))
+  const plate = new THREE.Mesh(new THREE.CylinderGeometry(MOVEMENT_R, MOVEMENT_R, 0.012, 64), plateMat)
+  plate.position.y = 0.004
+  addPart(root, parts, plate, 'movement', new THREE.Vector3(0, 0.16, -0.04))
+
+  const flange = new THREE.Mesh(extrudeRing(MOVEMENT_R - 0.01, MOVEMENT_R - 0.1, 0.01, 0.002), blackMat)
+  flange.position.y = 0.022
+  addPart(root, parts, flange, 'movement', new THREE.Vector3(0, 0.36, 0))
+
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.014, 28), blackMat)
+  hub.position.y = 0.03
+  addPart(root, parts, hub, 'movement', new THREE.Vector3(0, 0.44, 0))
+  anchors.movement = hub
+
+  for (let i = 0; i < 5; i += 1) {
+    const arm = new THREE.Mesh(new RoundedBoxGeometry(0.1, 0.012, 0.5, 2, 0.018), blackMat)
+    arm.position.y = 0.032
+    arm.rotation.y = (i / 5) * Math.PI * 2 + 0.18
+    addPart(root, parts, arm, 'movement', radialExplode(Math.sin(arm.rotation.y), -Math.cos(arm.rotation.y), 0.28, 0.5))
   }
-
-  const dateFrame = new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.016, 0.082, 2, 0.006), goldMat)
-  dateFrame.position.set(0.575, 0.062, 0)
-  const dateCard = new THREE.Mesh(new THREE.PlaneGeometry(0.082, 0.056), mat.sunburst(canvasMap(dateTexture(colors))))
-  dateCard.rotation.x = -Math.PI / 2
-  dateCard.position.set(0, 0.01, 0)
-  dateFrame.add(dateCard)
-  addPart(root, parts, dateFrame, 'dial', new THREE.Vector3(0.32, 0.54, 0))
-
-  const plate = new THREE.Mesh(
-    new THREE.CylinderGeometry(MOVEMENT_R, MOVEMENT_R, 0.016, 64),
-    mat.metal(brass, { map: canvasMap(perlageTexture(colors)), roughness: 0.4, metalness: 0.78, envMapIntensity: 1.05 }),
-  )
-  plate.position.y = 0.008
-  addPart(root, parts, plate, 'movement', new THREE.Vector3(0, 0.18, -0.04))
 
   GEARS.forEach((spec) => {
     const gear = makeGear(spec, brassMat, steelMat)
     gear.position.set(spec.x, spec.y, spec.z)
-    addPart(root, parts, gear, 'movement', radialExplode(spec.x, spec.z, 0.62 + spec.outer, 0.28))
+    addPart(root, parts, gear, 'movement', radialExplode(spec.x, spec.z, 0.62 + spec.outer, 0.3))
   })
 
-  const jewelGeo = new THREE.CylinderGeometry(0.011, 0.011, 0.005, 12)
-  const chatonGeo = new THREE.TorusGeometry(0.014, 0.003, 8, 16)
-  JEWELS.forEach(([jx, jz, jy]) => {
+  const jewelGeo = new THREE.CylinderGeometry(0.012, 0.012, 0.006, 12)
+  const chatonGeo = new THREE.TorusGeometry(0.016, 0.003, 8, 16)
+  JEWELS.forEach(([jx, jz, jy], i) => {
     const jewel = new THREE.Group()
-    const stone = new THREE.Mesh(jewelGeo, ruby)
+    const stone = new THREE.Mesh(jewelGeo, i === 5 ? ruby : mat.gem(i === 0 ? RUBY : '#7A2430'))
     const chaton = new THREE.Mesh(chatonGeo, goldMat)
     chaton.rotation.x = Math.PI / 2
     jewel.add(stone, chaton)
     jewel.position.set(jx, jy, jz)
     addPart(root, parts, jewel, 'movement', radialExplode(jx, jz, 0.48, 0.4))
-  })
-
-  const screwHead = new THREE.CylinderGeometry(0.015, 0.017, 0.007, 16)
-  const screwSlot = new THREE.BoxGeometry(0.018, 0.0035, 0.0035)
-  MOVEMENT_SCREWS.forEach(([sx, sz]) => {
-    const screw = new THREE.Group()
-    screw.add(new THREE.Mesh(screwHead, steelMat))
-    const slot = new THREE.Mesh(screwSlot, mat.coat(ink))
-    slot.position.y = 0.0045
-    screw.add(slot)
-    screw.position.set(sx, 0.03, sz)
-    addPart(root, parts, screw, 'movement', radialExplode(sx, sz, 0.4, 0.36))
-  })
-
-  const bridges = [
-    { w: 0.42, h: 0.014, d: 0.16, x: -0.24, y: 0.038, z: 0.2 },
-    { w: 0.5, h: 0.012, d: 0.14, x: 0.16, y: 0.034, z: -0.16 },
-    { w: 0.28, h: 0.012, d: 0.18, x: 0.22, y: 0.04, z: -0.42 },
-  ]
-  bridges.forEach((b) => {
-    const bridge = new THREE.Mesh(new RoundedBoxGeometry(b.w, b.h, b.d, 3, 0.022), bridgeMat)
-    bridge.position.set(b.x, b.y, b.z)
-    addPart(root, parts, bridge, 'movement', radialExplode(b.x, b.z, 0.22, 0.44))
   })
 
   const balance = new THREE.Group()
@@ -470,135 +482,91 @@ export function buildSubject({ colors }) {
     spoke.rotation.y = (i / 4) * Math.PI
     balance.add(spoke)
   }
-  const timingGeo = new THREE.CylinderGeometry(0.007, 0.007, 0.011, 10)
-  for (let i = 0; i < 8; i += 1) {
-    const a = (i / 8) * Math.PI * 2
-    const screw = new THREE.Mesh(timingGeo, goldMat)
-    screw.position.set(Math.cos(a) * 0.09, 0, Math.sin(a) * 0.09)
-    balance.add(screw)
-  }
   balance.add(new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.013, 16), steelMat))
-  balance.position.set(0.22, 0.036, -0.42)
+  balance.position.set(0.16, 0.04, -0.32)
   addPart(root, parts, balance, 'movement', new THREE.Vector3(0.28, 0.55, -0.42))
-  anchors.movement = balance
 
   const hairspring = new THREE.Mesh(makeHairspring(), steelMat)
-  hairspring.position.set(0.22, 0.044, -0.42)
+  hairspring.position.set(0.16, 0.048, -0.32)
   addPart(root, parts, hairspring, 'movement', new THREE.Vector3(0.32, 0.62, -0.38))
 
-  const pallet = new THREE.Group()
-  pallet.add(new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.01, 0.028, 1, 0.006), steelMat))
-  const forkL = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.01, 0.016), steelMat)
-  const forkR = forkL.clone()
-  forkL.position.set(-0.06, 0, 0.02)
-  forkR.position.set(-0.06, 0, -0.02)
-  pallet.add(forkL, forkR)
-  pallet.position.set(0.3, 0.026, -0.12)
-  addPart(root, parts, pallet, 'movement', new THREE.Vector3(0.38, 0.4, -0.08))
-
-  const rotor = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.038, 12, 36, Math.PI * 1.15), goldMat)
-  rotor.rotation.set(Math.PI / 2, 0, 0.55)
-  rotor.position.set(0, -0.04, 0.06)
-  addPart(root, parts, rotor, 'movement', new THREE.Vector3(-0.16, -0.38, 0.22))
-
   const caseMid = new THREE.Group()
-  caseMid.add(new THREE.Mesh(extrudeRing(CASE_R + 0.042, MOVEMENT_R + 0.018, 0.1, 0.016), goldMat))
-  const caseStep = new THREE.Mesh(extrudeRing(CASE_R + 0.02, DIAL_R + 0.03, 0.036, 0.01), goldMat)
-  caseStep.position.y = 0.052
+  const cushion = new THREE.Mesh(cushionGeometry(), mirrorMat)
+  cushion.position.y = 0.002
+  caseMid.add(cushion)
+  caseMid.add(new THREE.Mesh(extrudeRing(CASE_R + 0.05, MOVEMENT_R + 0.03, 0.08, 0.016), mirrorMat))
+  const caseStep = new THREE.Mesh(extrudeRing(CASE_R + 0.028, DIAL_R + 0.03, 0.032, 0.01), brushMat)
+  caseStep.position.y = 0.05
   caseMid.add(caseStep)
-  caseMid.position.y = 0.01
+  caseMid.position.y = 0.004
   addPart(root, parts, caseMid, 'case', new THREE.Vector3(0, -0.78, 0.1))
   anchors.case = caseMid
 
   const lugGeo = lugGeometry()
-  const barGeo = new THREE.CylinderGeometry(0.011, 0.011, 0.7, 12)
-  const lugScrewGeo = new THREE.CylinderGeometry(0.011, 0.011, 0.028, 12)
   LUGS.forEach((lug) => {
-    const mesh = new THREE.Mesh(lugGeo, goldMat)
-    mesh.position.set(lug.x, 0.008, lug.z)
+    const mesh = new THREE.Mesh(lugGeo, brushMat)
+    mesh.position.set(lug.x, 0.01, lug.z)
     mesh.rotation.y = lug.yaw
     addPart(root, parts, mesh, 'case', radialExplode(lug.x, lug.z, 0.55, -0.7))
   })
 
-  ;[
-    [0, -1.08],
-    [0, 1.08],
-  ].forEach(([bx, bz]) => {
-    const bar = new THREE.Mesh(barGeo, steelMat)
-    bar.rotation.z = Math.PI / 2
-    bar.position.set(bx, 0.002, bz)
-    addPart(root, parts, bar, 'case', radialExplode(bx, bz, 0.5, -0.74))
-  })
-
+  const lugScrewGeo = new THREE.CylinderGeometry(0.014, 0.014, 0.032, 12)
   LUGS.forEach((lug) => {
     const screw = new THREE.Mesh(lugScrewGeo, steelMat)
     screw.rotation.z = Math.PI / 2
-    screw.position.set(lug.x * 1.22, 0.01, lug.z)
+    screw.position.set(lug.x * 1.18, 0.02, lug.z)
     addPart(root, parts, screw, 'case', radialExplode(lug.x, lug.z, 0.6, -0.68))
   })
 
   const crown = new THREE.Group()
-  const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.09, 16), goldMat)
+  const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.1, 16), mirrorMat)
   tube.rotation.z = Math.PI / 2
-  const head = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.052, 0.058, 20), goldMat)
+  const head = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.054, 0.062, 20), brushMat)
   head.rotation.z = Math.PI / 2
-  head.position.x = 0.062
-  const cap = new THREE.Mesh(new THREE.SphereGeometry(0.048, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.5), goldMat)
-  cap.rotation.z = -Math.PI / 2
-  cap.position.x = 0.09
-  crown.add(tube, head, cap)
-  const fluteGeo = new THREE.BoxGeometry(0.01, 0.05, 0.008)
+  head.position.x = 0.068
+  crown.add(tube, head)
+  const fluteGeo = new THREE.BoxGeometry(0.01, 0.052, 0.008)
   for (let i = 0; i < 16; i += 1) {
     const a = (i / 16) * Math.PI * 2
-    const flute = new THREE.Mesh(fluteGeo, goldMat)
-    flute.position.set(0.078, Math.cos(a) * 0.05, Math.sin(a) * 0.05)
+    const flute = new THREE.Mesh(fluteGeo, mirrorMat)
+    flute.position.set(0.086, Math.cos(a) * 0.052, Math.sin(a) * 0.052)
     flute.rotation.x = a
     crown.add(flute)
   }
-  crown.position.set(CASE_R + 0.028, 0.022, 0)
+  crown.position.set(CASE_R + 0.036, 0.028, 0)
   addPart(root, parts, crown, 'case', new THREE.Vector3(0.55, -0.62, 0))
 
-  const strapGeo = strapGeometry()
+  const strapGeo = new RoundedBoxGeometry(0.62, 0.055, 1.05, 3, 0.05)
+  const ribGeo = new THREE.BoxGeometry(0.54, 0.014, 0.022)
   ;[
-    [0, -1.42],
-    [0, 1.42],
-  ].forEach(([sx, sz], i) => {
+    [0, -1.68],
+    [0, 1.68],
+  ].forEach(([sx, sz]) => {
     const strap = new THREE.Group()
-    const hideMesh = new THREE.Mesh(strapGeo, leatherMat)
-    strap.add(hideMesh)
-    if (i === 0) {
-      const holeGeo = new THREE.CylinderGeometry(0.016, 0.016, 0.04, 10)
-      for (let h = 0; h < 5; h += 1) {
-        const hole = new THREE.Mesh(holeGeo, mat.coat(ink))
-        hole.position.set(0, 0, -0.08 + h * 0.08)
-        strap.add(hole)
-      }
-    } else {
-      const buckle = new THREE.Mesh(extrudeRing(0.12, 0.09, 0.09, 0.008), goldMat)
-      buckle.rotation.z = Math.PI / 2
-      buckle.position.z = 0.28
-      const prong = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.22, 8), goldMat)
-      prong.position.z = 0.22
-      strap.add(buckle, prong)
+    strap.add(new THREE.Mesh(strapGeo, rubberMat))
+    for (let r = 0; r < 16; r += 1) {
+      const rib = new THREE.Mesh(ribGeo, rubberMat)
+      rib.position.set(0, 0.03, -0.44 + r * 0.056)
+      strap.add(rib)
     }
     strap.position.set(sx, -0.02, sz)
-    strap.rotation.x = sz > 0 ? 0.1 : -0.1
-    addPart(root, parts, strap, 'case', radialExplode(sx, sz, 0.7, -0.92))
+    strap.rotation.x = sz > 0 ? 0.12 : -0.12
+    addPart(root, parts, strap, 'case', radialExplode(sx, sz, 0.78, -0.92))
   })
 
-  const caseback = new THREE.Mesh(extrudeRing(CASE_R - 0.015, 0.4, 0.018, 0.006), darkMetal)
-  caseback.position.y = -0.068
+  const caseback = new THREE.Mesh(extrudeRing(CASE_R - 0.02, 0.42, 0.018, 0.006), brushMat)
+  caseback.position.y = -0.072
   const backPrint = new THREE.Mesh(
-    new THREE.RingGeometry(0.42, CASE_R - 0.07, 64),
-    mat.etched(canvasMap(casebackTexture(colors)), { roughness: 0.32, metalness: 0.82 }),
+    new THREE.RingGeometry(0.44, CASE_R - 0.08, 64),
+    mat.etched(canvasMap(noxCasebackTexture(colors)), { roughness: 0.32, metalness: 0.82 }),
   )
   backPrint.rotation.x = Math.PI / 2
   backPrint.position.y = -0.002
   caseback.add(backPrint)
   addPart(root, parts, caseback, 'caseback', new THREE.Vector3(0, -1.02, 0.12))
 
-  const exhibition = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.008, 48), glass)
-  exhibition.position.y = -0.072
+  const exhibition = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.008, 48), glass)
+  exhibition.position.y = -0.076
   exhibition.renderOrder = 4
   addPart(root, parts, exhibition, 'caseback', new THREE.Vector3(0, -1.08, 0.1))
 
@@ -606,13 +574,13 @@ export function buildSubject({ colors }) {
   for (let i = 0; i < 8; i += 1) {
     const a = (i / 8) * Math.PI * 2
     const screw = new THREE.Mesh(backScrewGeo, steelMat)
-    screw.position.set(Math.sin(a) * 0.88, -0.078, -Math.cos(a) * 0.88)
+    screw.position.set(Math.sin(a) * 0.92, -0.082, -Math.cos(a) * 0.92)
     addPart(root, parts, screw, 'caseback', radialExplode(Math.sin(a), -Math.cos(a), 0.35, -1.12))
   }
 
   root.userData.parts = parts
   root.userData.anchors = anchors
-  root.userData.bounds = { w: CASE_R * 2, d: 2.8 }
+  root.userData.bounds = { w: CASE_R * 2, d: 3.1 }
   return root
 }
 

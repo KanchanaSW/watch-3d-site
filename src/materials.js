@@ -119,6 +119,71 @@ export function sunburst(map) {
   })
 }
 
+/** Brushed stainless — bezel tops, lug faces. */
+export function brushedSteel(color, { map = null } = {}) {
+  return new THREE.MeshPhysicalMaterial({
+    color,
+    map,
+    metalness: 0.92,
+    roughness: 0.34,
+    clearcoat: 0.22,
+    clearcoatRoughness: 0.38,
+    envMapIntensity: 1.35,
+  })
+}
+
+/** Polished bevels and case flanks. */
+export function mirrorSteel(color) {
+  return new THREE.MeshPhysicalMaterial({
+    color,
+    metalness: 1,
+    roughness: 0.08,
+    clearcoat: 0.55,
+    clearcoatRoughness: 0.06,
+    envMapIntensity: 1.55,
+  })
+}
+
+/** Matte black movement bridges. */
+export function matteBlack(color = '#141414') {
+  return new THREE.MeshPhysicalMaterial({
+    color,
+    roughness: 0.64,
+    metalness: 0.28,
+    clearcoat: 0.1,
+    clearcoatRoughness: 0.5,
+    envMapIntensity: 0.7,
+  })
+}
+
+/** Super-LumiNova fill in skeleton hands. */
+export function lume(color = '#F3EFE0') {
+  return new THREE.MeshPhysicalMaterial({
+    color,
+    emissive: new THREE.Color(color),
+    emissiveIntensity: 0.2,
+    roughness: 0.58,
+    metalness: 0.04,
+  })
+}
+
+/** Ribbed rubber / fluoroelastomer strap. */
+export function rubberStrap(color, { map = null, bumpMap = null } = {}) {
+  return new THREE.MeshPhysicalMaterial({
+    color,
+    map,
+    bumpMap,
+    bumpScale: 0.09,
+    roughness: 0.84,
+    metalness: 0,
+    sheen: 0.1,
+    sheenColor: new THREE.Color('#1a1a1a'),
+    sheenRoughness: 0.7,
+    clearcoat: 0.06,
+    clearcoatRoughness: 0.75,
+  })
+}
+
 /** Calf / alligator strap. */
 export function leather(color, { map = null, bumpMap = null } = {}) {
   const sheenColor = new THREE.Color(color)
