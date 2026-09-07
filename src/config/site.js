@@ -59,7 +59,7 @@ export const siteConfig = {
       kicker: 'No solid dial',
       copy: 'A black chapter ring and twelve silver bar indices. The center is empty on purpose.',
       body: 'There is no sunburst, no date, no printed name. Twelve applied bars sit on a matte-black rehaut; the minute track is the inner edge of that ring. Through the hole, the gold train and black bridges are the face you actually read. This layer is a frame, not a cover.',
-      facts: ['Applied bar indices', 'Open center', 'Black rehaut'],
+      facts: ['Applied lume indices', 'Railroad minute track', 'Black rehaut'],
     },
     {
       id: 'movement',
@@ -85,7 +85,7 @@ export const siteConfig = {
   callouts: [
     { layer: 'crystal', from: 0.18, to: 0.38, name: 'Bezel', note: 'Six screws · brushed steel · flat sapphire', anchor: 'crystal' },
     { layer: 'hands', from: 0.4, to: 0.56, name: 'Hands', note: 'Steel swords · lume · parked at 10:10', anchor: 'hands' },
-    { layer: 'dial', from: 0.5, to: 0.66, name: 'Ring', note: 'Black rehaut · applied bar indices', anchor: 'dial' },
+    { layer: 'dial', from: 0.5, to: 0.66, name: 'Ring', note: 'Black rehaut · railroad track · applied indices', anchor: 'dial' },
     { layer: 'movement', from: 0.64, to: 0.82, name: 'Calibre 441', note: 'Gold train · black bridges · ruby', anchor: 'movement' },
     { layer: 'case', from: 0.78, to: 0.96, name: 'Case', note: '44 mm steel · crown, lugs, rubber', anchor: 'case' },
   ],

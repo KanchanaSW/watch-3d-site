@@ -101,6 +101,66 @@ export function dialTexture(colors) {
   return canvas
 }
 
+/** Circular rehaut: circular grain, railroad minutes, steel inner/outer tracks. */
+export function chapterTexture(colors) {
+  const steel = colors.foreground
+  const size = 2048
+  const { canvas, ctx } = makeCanvas(size, size)
+  const cx = size / 2
+  const cy = size / 2
+  const outer = size * 0.5 - 1
+  const inner = outer * 0.9
+
+  ctx.fillStyle = '#0A0A0A'
+  ctx.fillRect(0, 0, size, size)
+
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(cx, cy, outer, 0, Math.PI * 2)
+  ctx.arc(cx, cy, inner, 0, Math.PI * 2, true)
+  ctx.clip()
+
+  ctx.fillStyle = '#141414'
+  ctx.fillRect(0, 0, size, size)
+
+  for (let i = 0; i < 220; i += 1) {
+    ctx.strokeStyle = hexAlpha(steel, i % 3 === 0 ? 0.055 : 0.028)
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.arc(cx, cy, inner + 3 + i * 0.55, 0, Math.PI * 2)
+    ctx.stroke()
+  }
+
+  const band = outer - inner
+  for (let i = 0; i < 60; i += 1) {
+    const a = (i / 60) * Math.PI * 2 - Math.PI / 2
+    const major = i % 5 === 0
+    const r0 = inner + band * 0.1
+    const r1 = inner + band * (major ? 0.48 : 0.32)
+    ctx.strokeStyle = major ? hexAlpha(steel, 0.95) : hexAlpha(steel, 0.62)
+    ctx.lineWidth = major ? 5.2 : 2.4
+    ctx.beginPath()
+    ctx.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0)
+    ctx.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1)
+    ctx.stroke()
+  }
+
+  ctx.strokeStyle = hexAlpha(steel, 0.82)
+  ctx.lineWidth = 6
+  ctx.beginPath()
+  ctx.arc(cx, cy, inner + 7, 0, Math.PI * 2)
+  ctx.stroke()
+
+  ctx.strokeStyle = hexAlpha(steel, 0.28)
+  ctx.lineWidth = 4
+  ctx.beginPath()
+  ctx.arc(cx, cy, outer - 6, 0, Math.PI * 2)
+  ctx.stroke()
+
+  ctx.restore()
+  return canvas
+}
+
 export function casebackTexture(colors) {
   const ink = colors.background
   const gold = colors.primary

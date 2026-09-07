@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
 import {
+  chapterTexture,
   noxCasebackTexture,
   perlageTexture,
   rubberBump,
@@ -139,21 +140,54 @@ function extrudeFlat(shape, thickness) {
   return geo
 }
 
-function batonGeometry(w, d, h) {
+function appliedMarkerShape(innerW, outerW, length) {
   const shape = new THREE.Shape()
-  const x = -w / 2
-  const y = -d / 2
-  const r = Math.min(w, d) * 0.22
-  shape.moveTo(x + r, y)
-  shape.lineTo(x + w - r, y)
-  shape.quadraticCurveTo(x + w, y, x + w, y + r)
-  shape.lineTo(x + w, y + d - r)
-  shape.quadraticCurveTo(x + w, y + d, x + w - r, y + d)
-  shape.lineTo(x + r, y + d)
-  shape.quadraticCurveTo(x, y + d, x, y + d - r)
-  shape.lineTo(x, y + r)
-  shape.quadraticCurveTo(x, y, x + r, y)
-  return extrudeFlat(shape, h)
+  const half = length / 2
+  // +Y of the 2D shape becomes +Z after extrudeFlat. At 12, +Z is inward.
+  shape.moveTo(-outerW / 2, -half)
+  shape.lineTo(outerW / 2, -half)
+  shape.lineTo(innerW / 2, half)
+  shape.lineTo(-innerW / 2, half)
+  shape.closePath()
+  return shape
+}
+
+function makeAppliedMarker(innerW, outerW, length, height, steel, lume) {
+  const marker = new THREE.Group()
+  const bodyGeo = new THREE.ExtrudeGeometry(appliedMarkerShape(innerW, outerW, length), {
+    depth: height,
+    bevelEnabled: true,
+    bevelThickness: 0.0045,
+    bevelSize: 0.0035,
+    bevelSegments: 3,
+    curveSegments: 4,
+  })
+  bodyGeo.rotateX(-Math.PI / 2)
+  bodyGeo.translate(0, height / 2, 0)
+  bodyGeo.computeVertexNormals()
+  marker.add(new THREE.Mesh(bodyGeo, steel))
+  const inlay = new THREE.Mesh(
+    extrudeFlat(appliedMarkerShape(innerW * 0.42, outerW * 0.42, length * 0.7), height * 0.5),
+    lume,
+  )
+  inlay.position.y = height * 0.48
+  marker.add(inlay)
+  return marker
+}
+
+function rehautGeometry() {
+  const outer = DIAL_R - 0.002
+  const inner = DIAL_R - 0.102
+  const pts = [
+    new THREE.Vector2(inner, 0),
+    new THREE.Vector2(outer, 0),
+    new THREE.Vector2(outer, 0.02),
+    new THREE.Vector2(inner + 0.028, 0.015),
+    new THREE.Vector2(inner, 0.007),
+  ]
+  const geo = new THREE.LatheGeometry(pts, 80)
+  geo.computeVertexNormals()
+  return geo
 }
 
 function lugGeometry() {
@@ -209,6 +243,8 @@ function cushionGeometry() {
   geo.computeVertexNormals()
   return geo
 }
+
+function gearShape(teeth, inner, outer, hole) {
   const shape = new THREE.Shape()
   const step = (Math.PI * 2) / teeth
   for (let i = 0; i < teeth; i += 1) {
@@ -419,17 +455,53 @@ export function buildSubject({ colors }) {
   second.rotation.y = THREE.MathUtils.degToRad(-126)
   addPart(root, parts, second, 'hands', new THREE.Vector3(0.18, 1.08, 0.38))
 
-  const chapter = new THREE.Mesh(extrudeRing(DIAL_R - 0.006, DIAL_R - 0.08, 0.014, 0.003), blackMat)
-  chapter.position.y = 0.058
+  const chapter = new THREE.Group()
+  const rehaut = new THREE.Mesh(rehautGeometry(), blackMat)
+  const track = new THREE.Mesh(
+    new THREE.RingGeometry(DIAL_R - 0.1, DIAL_R - 0.006, 96),
+    mat.etched(canvasMap(chapterTexture(colors)), { roughness: 0.46, metalness: 0.28 }),
+  )
+  track.rotation.x = -Math.PI / 2
+  track.position.y = 0.016
+  const innerRail = new THREE.Mesh(extrudeRing(DIAL_R - 0.096, DIAL_R - 0.106, 0.007, 0.0012), steelMat)
+  innerRail.position.y = 0.008
+  const tickGeo = new THREE.BoxGeometry(0.0055, 0.006, 0.022)
+  for (let i = 0; i < 60; i += 1) {
+    if (i % 5 === 0) continue
+    const a = (i / 60) * Math.PI * 2
+    const tick = new THREE.Mesh(tickGeo, steelMat)
+    const r = DIAL_R - 0.086
+    tick.position.set(Math.sin(a) * r, 0.016, -Math.cos(a) * r)
+    tick.rotation.y = -a
+    chapter.add(tick)
+  }
+  chapter.add(rehaut, track, innerRail)
+  chapter.position.y = 0.056
   addPart(root, parts, chapter, 'dial', new THREE.Vector3(0, 0.5, 0.04))
   anchors.dial = chapter
 
-  const hourGeo = batonGeometry(0.028, 0.092, 0.014)
-  const twelveGeo = batonGeometry(0.04, 0.11, 0.016)
   for (let i = 0; i < 12; i += 1) {
-    const { x, z, a } = clockPos(i, 0.69)
-    const index = new THREE.Mesh(i === 0 ? twelveGeo : hourGeo, steelMat)
-    index.position.set(x, 0.074, z)
+    const cardinal = i % 3 === 0
+    const { x, z, a } = clockPos(i, DIAL_R - 0.042)
+    let index
+    if (i === 0) {
+      index = new THREE.Group()
+      const left = makeAppliedMarker(0.012, 0.02, 0.09, 0.02, steelMat, lumeMat)
+      const right = makeAppliedMarker(0.012, 0.02, 0.09, 0.02, steelMat, lumeMat)
+      left.position.x = -0.018
+      right.position.x = 0.018
+      index.add(left, right)
+    } else {
+      index = makeAppliedMarker(
+        cardinal ? 0.016 : 0.013,
+        cardinal ? 0.03 : 0.024,
+        cardinal ? 0.096 : 0.082,
+        cardinal ? 0.02 : 0.017,
+        steelMat,
+        lumeMat,
+      )
+    }
+    index.position.set(x, 0.078, z)
     index.rotation.y = -a
     addPart(root, parts, index, 'dial', radialExplode(x, z, 0.34, 0.58))
   }
