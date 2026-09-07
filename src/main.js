@@ -81,7 +81,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.outputColorSpace = THREE.SRGBColorSpace
 renderer.toneMapping = THREE.ACESFilmicToneMapping
-renderer.toneMappingExposure = 1.05
+renderer.toneMappingExposure = 1.14
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
@@ -112,12 +112,12 @@ setCameraRigs()
 camera.position.copy(camStart)
 
 const pmrem = new THREE.PMREMGenerator(renderer)
-scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
-scene.environmentIntensity = 0.55
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.02).texture
+scene.environmentIntensity = 0.78
 
 scene.add(new THREE.HemisphereLight(colors.foreground, colors.background, 0.55))
 
-const keyLight = new THREE.DirectionalLight(colors.foreground, 1.35)
+const keyLight = new THREE.DirectionalLight(colors.foreground, 1.48)
 keyLight.position.set(3.2, 5.2, 2.4)
 keyLight.castShadow = true
 keyLight.shadow.mapSize.set(2048, 2048)
@@ -138,7 +138,7 @@ const fill = new THREE.DirectionalLight(colors.foreground, 0.28)
 fill.position.set(-2.2, 2.4, 3.2)
 scene.add(fill)
 
-const underglow = new THREE.PointLight(colors.primary, 2.4, 4.5, 1.6)
+const underglow = new THREE.PointLight(colors.primary, 1.7, 4.5, 1.6)
 underglow.position.set(0, -0.15, 0)
 scene.add(underglow)
 
@@ -246,7 +246,7 @@ function frameFromProgress(p) {
   camera.position.y += pointer.y * 0.08
   look.copy(lookStart).lerp(lookEnd, p)
   camera.lookAt(look)
-  underglow.intensity = 1.6 + p * 2.2
+  underglow.intensity = 1.15 + p * 1.6
   shadow.material.opacity = 0.55 - p * 0.22
   if (subject) {
     applyExplosion(subject, p)
